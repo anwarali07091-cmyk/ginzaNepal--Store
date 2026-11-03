@@ -1,0 +1,1253 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SakuraExpress Japan - Direct import to Nepal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        jpRed: '#BC002D',
+                        npBlue: '#003893',
+                        sakuraPink: '#FFF0F5',
+                        brandDark: '#1E293B',
+                        brandAccent: '#E11D48'
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F8FAFC;
+        }
+        .glass-header {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+        .badge-pulse {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col">
+
+    <!-- Top Announcement Bar -->
+    <div class="bg-gradient-to-r from-jpRed to-npBlue text-white text-xs font-medium py-2 px-4 text-center flex justify-between items-center">
+        <div class="hidden sm:flex items-center space-x-2 container mx-auto justify-start">
+            <span>🇯🇵 Direct Shipping from Tokyo, Japan to Kathmandu, Nepal 🇳🇵</span>
+            <span class="bg-white/20 px-2 py-0.5 rounded text-[10px]">Duty paid shipping options</span>
+        </div>
+        <div class="container mx-auto sm:mx-0 flex justify-center sm:justify-end items-center space-x-4 w-full">
+            <span id="fxRateNotice"><i class="fa-solid fa-calculator mr-1"></i> 1 JPY ≈ 0.89 NPR</span>
+            <button id="langToggleBtn" onclick="toggleLanguage()" class="hover:underline flex items-center gap-1 font-semibold">
+                <i class="fa-solid fa-globe"></i> <span id="currentLangText">नेपाली</span>
+            </button>
+            <button onclick="toggleAdminView()" class="bg-white text-slate-900 px-2.5 py-0.5 rounded text-[11px] font-bold hover:bg-slate-200 transition shadow">
+                <i class="fa-solid fa-user-shield text-jpRed mr-1"></i> <span id="adminToggleText">Admin Portal</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <header class="sticky top-0 z-30 glass-header border-b border-slate-200 shadow-sm transition-all">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                
+                <!-- Logo -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('storefront')">
+                    <div class="w-11 h-11 rounded-2xl bg-gradient-to-tr from-jpRed to-rose-400 flex items-center justify-center text-white text-2xl font-bold shadow-lg shadow-rose-200">
+                        🌸
+                    </div>
+                    <div>
+                        <span class="text-2xl font-extrabold tracking-tight text-slate-900">Tokyo<span class="text-jpRed">Nepal</span></span>
+                        <span class="block text-[10px] font-bold tracking-widest text-slate-400 uppercase">100% Authentic Japanese Goods</span>
+                    </div>
+                </div>
+
+                <!-- Search Bar (Desktop) -->
+                <div class="hidden md:flex flex-1 max-w-md mx-8 relative">
+                    <input type="text" id="searchInput" onkeyup="filterProducts()" placeholder="Search Japanese products (e.g. Hada Labo, Match, Casio)..." 
+                        class="w-full pl-10 pr-4 py-2.5 bg-slate-100/80 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-jpRed/50 focus:bg-white text-sm transition">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-slate-400"></i>
+                </div>
+
+                <!-- Right Actions -->
+                <div class="flex items-center space-x-3">
+                    <button onclick="switchTab('orders')" class="relative p-2.5 text-slate-600 hover:text-jpRed hover:bg-slate-100 rounded-xl transition flex items-center gap-2">
+                        <i class="fa-solid fa-box-open text-lg"></i>
+                        <span class="hidden lg:inline text-xs font-semibold" data-i18n="my_orders">Track Order</span>
+                    </button>
+
+                    <button onclick="openCart()" class="relative p-2.5 bg-slate-900 text-white hover:bg-jpRed rounded-xl transition flex items-center space-x-2 shadow-md">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        <span class="text-xs font-bold" data-i18n="cart">Cart</span>
+                        <span id="cartBadge" class="bg-jpRed text-white text-[11px] font-bold px-2 py-0.5 rounded-full border border-white">0</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile Search Bar -->
+            <div class="md:hidden pb-3">
+                <div class="relative">
+                    <input type="text" id="searchInputMobile" onkeyup="filterProductsMobile()" placeholder="Search Japanese products..." 
+                        class="w-full pl-10 pr-4 py-2 bg-slate-100 border border-slate-200 rounded-xl text-sm">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-slate-400"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT CONTAINER -->
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6">
+
+        <!-- ==================== VIEW 1: STOREFRONT ==================== -->
+        <div id="storefrontView" class="space-y-8">
+            
+            <!-- Hero Banner -->
+            <div class="relative rounded-3xl overflow-hidden bg-slate-900 text-white shadow-2xl">
+                <img src="https://images.unsplash.com/photo-1503899036084-c55cdd92da26?auto=format&fit=crop&w=1400&q=80" alt="Tokyo City" class="absolute inset-0 w-full h-full object-cover opacity-35">
+                <div class="relative z-10 p-8 sm:p-12 lg:p-16 max-w-2xl">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-jpRed/90 text-white text-xs font-bold tracking-wide uppercase mb-4 shadow">
+                        <i class="fa-solid fa-plane-departure"></i> Tokyo ➔ Kathmandu Express
+                    </div>
+                    <h1 class="text-3xl sm:text-5xl font-black tracking-tight leading-tight mb-4" data-i18n="hero_title">
+                        Order Genuine Products Direct From Japan to Nepal.
+                    </h1>
+                    <p class="text-slate-300 text-sm sm:text-base mb-6 leading-relaxed" data-i18n="hero_desc">
+                        No middleman fees! Buy authentic Cosmetics, Electronics, Matcha, Anime collectibles & Watches. Fast shipping via Japan EMS & Cargo. Pay with eSewa, Khalti, or Bank.
+                    </p>
+                    <div class="flex flex-wrap gap-4">
+                        <a href="#productsSection" class="bg-jpRed hover:bg-rose-700 text-white font-bold px-6 py-3 rounded-xl transition shadow-lg flex items-center gap-2">
+                            <span data-i18n="shop_now">Explore Shop</span> <i class="fa-solid fa-arrow-down"></i>
+                        </a>
+                        <div class="flex items-center gap-3 bg-white/10 backdrop-blur px-4 py-3 rounded-xl border border-white/20 text-xs">
+                            <i class="fa-solid fa-shield-halved text-emerald-400 text-lg"></i>
+                            <div>
+                                <p class="font-bold">100% Guaranteed Original</p>
+                                <p class="text-slate-300">Directly from Shinjuku & Akihabara</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Shipping Calculator Banner Info -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-start space-x-4">
+                    <div class="w-12 h-12 bg-rose-50 text-jpRed rounded-xl flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-plane-up"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm">Air EMS Express Shipping</h4>
+                        <p class="text-slate-500 text-xs mt-1">Delivery in 4 - 7 Business Days directly to your door in Nepal.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-start space-x-4">
+                    <div class="w-12 h-12 bg-blue-50 text-npBlue rounded-xl flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-qrcode"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm">Nepal Local Payment</h4>
+                        <p class="text-slate-500 text-xs mt-1">Pay easily via eSewa, Khalti, or Nepal Bank QR transfer.</p>
+                    </div>
+                </div>
+                <div class="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm flex items-start space-x-4">
+                    <div class="w-12 h-12 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center text-xl shrink-0">
+                        <i class="fa-solid fa-box"></i>
+                    </div>
+                    <div>
+                        <h4 class="font-bold text-slate-900 text-sm">Customs Clearance Included</h4>
+                        <p class="text-slate-500 text-xs mt-1">We handle all Japan export & Nepal customs documentation for you.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Categories Filter -->
+            <div id="productsSection" class="scroll-mt-24">
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
+                    <div>
+                        <h2 class="text-2xl font-extrabold text-slate-900 tracking-tight" data-i18n="catalog_title">Japanese Product Catalog</h2>
+                        <p class="text-slate-500 text-xs sm:text-sm">Prices shown in both Nepalese Rupees (NPR) and Japanese Yen (JPY)</p>
+                    </div>
+                    
+                    <!-- Category Pills -->
+                    <div class="flex items-center gap-2 overflow-x-auto pb-2 md:pb-0 custom-scrollbar">
+                        <button onclick="setCategory('all')" id="cat-all" class="cat-btn bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition">All Items</button>
+                        <button onclick="setCategory('Skincare')" id="cat-Skincare" class="cat-btn bg-white text-slate-600 hover:bg-slate-100 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap border border-slate-200 transition">✨ Skincare & Beauty</button>
+                        <button onclick="setCategory('Snacks')" id="cat-Snacks" class="cat-btn bg-white text-slate-600 hover:bg-slate-100 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap border border-slate-200 transition">🍵 Matcha & Treats</button>
+                        <button onclick="setCategory('Electronics')" id="cat-Electronics" class="cat-btn bg-white text-slate-600 hover:bg-slate-100 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap border border-slate-200 transition">🎧 Tech & Gadgets</button>
+                        <button onclick="setCategory('Anime')" id="cat-Anime" class="cat-btn bg-white text-slate-600 hover:bg-slate-100 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap border border-slate-200 transition">⚡ Anime & Figures</button>
+                        <button onclick="setCategory('Watches')" id="cat-Watches" class="cat-btn bg-white text-slate-600 hover:bg-slate-100 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap border border-slate-200 transition">⌚ Japanese Watches</button>
+                    </div>
+                </div>
+
+                <!-- Product Grid -->
+                <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    <!-- Dynamic rendering via JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VIEW 2: CUSTOMER ORDER TRACKER ==================== -->
+        <div id="ordersView" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-3xl border border-slate-200 shadow-sm">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-5">
+                    <div>
+                        <h2 class="text-xl font-bold text-slate-900">Track My Packages from Japan</h2>
+                        <p class="text-slate-500 text-xs">Real-time update on shipments from Tokyo warehouse to Nepal address.</p>
+                    </div>
+                    <button onclick="switchTab('storefront')" class="text-xs bg-slate-100 hover:bg-slate-200 px-4 py-2 rounded-xl font-semibold transition">
+                        <i class="fa-solid fa-arrow-left mr-1"></i> Back to Shopping
+                    </button>
+                </div>
+
+                <div id="customerOrdersList" class="divide-y divide-slate-100 mt-4">
+                    <!-- Orders dynamically rendered here -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== VIEW 3: ADMIN PORTAL (JAPAN WAREHOUSE VIEW) ==================== -->
+        <div id="adminView" class="hidden space-y-6">
+            <!-- Admin Header -->
+            <div class="bg-slate-900 text-white p-6 rounded-3xl shadow-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                <div>
+                    <div class="flex items-center gap-2 text-rose-400 text-xs font-bold uppercase tracking-wider mb-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span> Japan Warehouse Dispatch System
+                    </div>
+                    <h2 class="text-2xl font-black">Tokyo Hub Export Dashboard</h2>
+                    <p class="text-slate-400 text-xs mt-1">Manage orders placed from Nepal, confirm eSewa/Khalti payments, and dispatch air cargo.</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="openAddProductModal()" class="bg-jpRed hover:bg-rose-700 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition shadow flex items-center gap-1.5">
+                        <i class="fa-solid fa-plus"></i> Add New Product
+                    </button>
+                    <button onclick="toggleAdminView()" class="bg-white/10 hover:bg-white/20 text-white text-xs font-bold px-4 py-2.5 rounded-xl transition">
+                        Exit Admin
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-slate-400 text-xs font-medium">Total Received Orders</p>
+                    <p class="text-2xl font-black text-slate-900 mt-1" id="statTotalOrders">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-slate-400 text-xs font-medium">Pending Payments</p>
+                    <p class="text-2xl font-black text-amber-600 mt-1" id="statPendingPayments">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-slate-400 text-xs font-medium">In Transit to Nepal</p>
+                    <p class="text-2xl font-black text-blue-600 mt-1" id="statInTransit">0</p>
+                </div>
+                <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+                    <p class="text-slate-400 text-xs font-medium">Total Sales Revenue</p>
+                    <p class="text-2xl font-black text-emerald-600 mt-1" id="statRevenue">NPR 0</p>
+                </div>
+            </div>
+
+            <!-- Admin Orders Table -->
+            <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                    <h3 class="font-bold text-slate-900">Incoming Nepal Customer Orders</h3>
+                    <span class="text-xs bg-slate-100 text-slate-600 px-3 py-1 rounded-full font-medium">Auto-synced</span>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse text-xs">
+                        <thead>
+                            <tr class="bg-slate-50 border-b border-slate-100 text-slate-500 font-semibold uppercase tracking-wider">
+                                <th class="p-4">Order ID & Date</th>
+                                <th class="p-4">Nepal Customer</th>
+                                <th class="p-4">Items & Amount</th>
+                                <th class="p-4">Payment Method & Proof</th>
+                                <th class="p-4">Shipping Status</th>
+                                <th class="p-4 text-right">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminOrdersTableBody" class="divide-y divide-slate-100">
+                            <!-- Admin table rows rendered dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-900 text-slate-400 text-xs mt-auto border-t border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div class="space-y-3">
+                <div class="flex items-center space-x-2 text-white font-bold text-lg">
+                    <span>🌸 TokyoNepal Express</span>
+                </div>
+                <p class="leading-relaxed">Connecting Nepal with premium, authentic Japanese products directly from stores in Tokyo, Osaka & Chiba.</p>
+                <div class="text-slate-500">
+                    <p>Japan Office: Shinjuku-ku, Tokyo</p>
+                    <p>Nepal Contact Hub: New Baneshwor, Kathmandu</p>
+                </div>
+            </div>
+            <div>
+                <h4 class="text-white font-bold text-sm mb-3">Customer Support</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white">Shipping Rates & EMS Times</a></li>
+                    <li><a href="#" class="hover:text-white">Customs & Duty Information</a></li>
+                    <li><a href="#" class="hover:text-white">Nepal Payment Instructions</a></li>
+                    <li><a href="#" class="hover:text-white">Track Air Cargo Status</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold text-sm mb-3">Top Import Categories</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" class="hover:text-white">Japanese Skincare (Biore, Rohto)</a></li>
+                    <li><a href="#" class="hover:text-white">Authentic Uji Matcha Tea</a></li>
+                    <li><a href="#" class="hover:text-white">Casio & Seiko Watches</a></li>
+                    <li><a href="#" class="hover:text-white">Anime Action Figures</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-white font-bold text-sm mb-3">Accepted Payments in Nepal</h4>
+                <div class="flex flex-wrap gap-2 text-xs font-bold text-slate-800">
+                    <span class="bg-emerald-400 px-2 py-1 rounded">eSewa</span>
+                    <span class="bg-purple-400 text-white px-2 py-1 rounded">Khalti</span>
+                    <span class="bg-blue-400 text-white px-2 py-1 rounded">Fonepay</span>
+                    <span class="bg-slate-700 text-white px-2 py-1 rounded">Visa / Mastercard</span>
+                </div>
+                <p class="mt-4 text-[11px] text-slate-500">All packages sealed with authentic Japanese export stickers.</p>
+            </div>
+        </div>
+        <div class="border-t border-slate-800 py-4 text-center text-slate-500 text-[11px]">
+            &copy; 2026 SakuraExpress Japan-Nepal Logistics. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- ==================== CART SLIDE-OVER DRAWER ==================== -->
+    <div id="cartModal" class="fixed inset-0 z-50 hidden transition-opacity">
+        <!-- Backdrop -->
+        <div onclick="closeCart()" class="absolute inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        
+        <div class="fixed inset-y-0 right-0 max-w-full flex pl-10">
+            <div class="w-screen max-w-md bg-white shadow-2xl flex flex-col">
+                
+                <!-- Drawer Header -->
+                <div class="p-6 bg-slate-900 text-white flex justify-between items-center">
+                    <div class="flex items-center gap-2">
+                        <i class="fa-solid fa-bag-shopping text-jpRed text-xl"></i>
+                        <h3 class="font-bold text-lg">Your Cart (Ship to Nepal)</h3>
+                    </div>
+                    <button onclick="closeCart()" class="text-slate-400 hover:text-white p-1">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <!-- Drawer Content -->
+                <div class="flex-1 overflow-y-auto p-6 space-y-4 custom-scrollbar" id="cartItemsContainer">
+                    <!-- Items rendered dynamically -->
+                </div>
+
+                <!-- Drawer Footer & Summary -->
+                <div class="p-6 border-t border-slate-200 bg-slate-50 space-y-4">
+                    
+                    <!-- Shipping Mode Selection -->
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-2">Choose Shipping Method to Nepal:</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <label class="border rounded-xl p-2.5 cursor-pointer flex flex-col bg-white text-xs hover:border-jpRed transition" id="shipOptEMS">
+                                <div class="flex items-center justify-between font-bold">
+                                    <span>✈️ Japan Post EMS</span>
+                                    <input type="radio" name="shippingMethod" value="EMS" checked onclick="calculateTotals()" class="accent-jpRed">
+                                </div>
+                                <span class="text-slate-500 text-[11px] mt-1">4-7 Days Air Fast</span>
+                                <span class="font-bold text-jpRed mt-1">NPR 1,200</span>
+                            </label>
+                            <label class="border rounded-xl p-2.5 cursor-pointer flex flex-col bg-white text-xs hover:border-jpRed transition" id="shipOptCargo">
+                                <div class="flex items-center justify-between font-bold">
+                                    <span>🚢 Sea & Air Cargo</span>
+                                    <input type="radio" name="shippingMethod" value="Cargo" onclick="calculateTotals()" class="accent-jpRed">
+                                </div>
+                                <span class="text-slate-500 text-[11px] mt-1">10-14 Days Budget</span>
+                                <span class="font-bold text-jpRed mt-1">NPR 600</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Price breakdown -->
+                    <div class="space-y-1.5 text-xs">
+                        <div class="flex justify-between text-slate-600">
+                            <span>Subtotal:</span>
+                            <span id="cartSubtotal">NPR 0</span>
+                        </div>
+                        <div class="flex justify-between text-slate-600">
+                            <span>Japan to Nepal Freight Fee:</span>
+                            <span id="cartShippingFee">NPR 1,200</span>
+                        </div>
+                        <div class="flex justify-between text-slate-600">
+                            <span>Estimated JPY equivalent:</span>
+                            <span id="cartYenTotal" class="font-mono text-slate-500">¥0</span>
+                        </div>
+                        <div class="flex justify-between text-sm font-black text-slate-900 pt-2 border-t border-slate-200">
+                            <span>Total Payable:</span>
+                            <span id="cartGrandTotal" class="text-jpRed">NPR 0</span>
+                        </div>
+                    </div>
+
+                    <button onclick="openCheckout()" id="btnProceedCheckout" class="w-full bg-jpRed hover:bg-rose-700 text-white font-bold py-3 rounded-xl transition shadow-lg flex items-center justify-center gap-2">
+                        <span>Proceed to Delivery & Payment</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== CHECKOUT & NEPAL PAYMENT MODAL ==================== -->
+    <div id="checkoutModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div onclick="closeCheckout()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+
+        <div class="relative min-h-screen flex items-center justify-center p-4">
+            <div class="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden my-8">
+                
+                <div class="bg-slate-900 text-white p-6 flex justify-between items-center">
+                    <div>
+                        <h3 class="font-bold text-lg">Shipping Address & Payment</h3>
+                        <p class="text-slate-400 text-xs">Direct import order to Nepal address</p>
+                    </div>
+                    <button onclick="closeCheckout()" class="text-slate-400 hover:text-white">
+                        <i class="fa-solid fa-xmark text-xl"></i>
+                    </button>
+                </div>
+
+                <form id="checkoutForm" onsubmit="submitOrder(event)" class="p-6 space-y-6">
+                    
+                    <!-- Customer Details Nepal -->
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-jpRed mb-3 flex items-center gap-1">
+                            <i class="fa-solid fa-location-dot"></i> 1. Nepal Delivery Address
+                        </h4>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                            <div>
+                                <label class="block font-semibold mb-1">Full Name *</label>
+                                <input type="text" id="custName" required placeholder="e.g. Ram Kumar Shrestha" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-jpRed outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-semibold mb-1">Mobile / WhatsApp Number *</label>
+                                <input type="tel" id="custPhone" required placeholder="e.g. 9841XXXXXX" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-jpRed outline-none">
+                            </div>
+                            <div>
+                                <label class="block font-semibold mb-1">District / City *</label>
+                                <select id="custDistrict" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-jpRed outline-none">
+                                    <option value="Kathmandu">Kathmandu</option>
+                                    <option value="Lalitpur">Lalitpur</option>
+                                    <option value="Bhaktapur">Bhaktapur</option>
+                                    <option value="Pokhara">Pokhara</option>
+                                    <option value="Chitwan">Chitwan</option>
+                                    <option value="Butwal">Butwal</option>
+                                    <option value="Dharan">Dharan</option>
+                                    <option value="Biratnagar">Biratnagar</option>
+                                    <option value="Other">Other District</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block font-semibold mb-1">Detailed Address / Landmark *</label>
+                                <input type="text" id="custAddress" required placeholder="e.g. House #45, New Baneshwor near Plaza" class="w-full p-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-jpRed outline-none">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Option Selection -->
+                    <div>
+                        <h4 class="text-xs font-bold uppercase tracking-wider text-jpRed mb-3 flex items-center gap-1">
+                            <i class="fa-solid fa-credit-card"></i> 2. Payment Method
+                        </h4>
+                        
+                        <div class="grid grid-cols-3 gap-2 mb-4">
+                            <button type="button" onclick="selectPayMethod('esewa')" id="payTab-esewa" class="pay-method-btn border-2 border-emerald-500 bg-emerald-50 p-3 rounded-xl text-center cursor-pointer transition">
+                                <span class="block font-extrabold text-emerald-700 text-xs">eSewa / Khalti</span>
+                                <span class="text-[10px] text-slate-500">Instant QR</span>
+                            </button>
+                            <button type="button" onclick="selectPayMethod('bank')" id="payTab-bank" class="pay-method-btn border border-slate-200 bg-white p-3 rounded-xl text-center cursor-pointer transition">
+                                <span class="block font-extrabold text-blue-700 text-xs">Nepal Bank QR</span>
+                                <span class="text-[10px] text-slate-500">Direct Deposit</span>
+                            </button>
+                            <button type="button" onclick="selectPayMethod('card')" id="payTab-card" class="pay-method-btn border border-slate-200 bg-white p-3 rounded-xl text-center cursor-pointer transition">
+                                <span class="block font-extrabold text-slate-800 text-xs">Credit Card</span>
+                                <span class="text-[10px] text-slate-500">Visa / Master</span>
+                            </button>
+                        </div>
+
+                        <!-- Payment Box Content (QR Code Display) -->
+                        <div id="paymentInstructionsBox" class="p-4 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col sm:flex-row items-center gap-4">
+                            <!-- Simulated QR Code SVG -->
+                            <div class="bg-white p-3 rounded-xl border border-slate-200 text-center shrink-0">
+                                <div class="w-32 h-32 bg-slate-900 rounded-lg p-2 flex flex-col justify-between items-center text-white text-[9px] relative overflow-hidden">
+                                    <div class="grid grid-cols-4 gap-1 w-full h-full opacity-90">
+                                        <div class="bg-white rounded-xs"></div><div class="bg-emerald-400"></div><div class="bg-white"></div><div class="bg-white"></div>
+                                        <div class="bg-white"></div><div class="bg-slate-900"></div><div class="bg-white"></div><div class="bg-emerald-400"></div>
+                                        <div class="bg-emerald-400"></div><div class="bg-white"></div><div class="bg-white"></div><div class="bg-white"></div>
+                                        <div class="bg-white"></div><div class="bg-white"></div><div class="bg-emerald-400"></div><div class="bg-white"></div>
+                                    </div>
+                                    <div class="absolute inset-0 flex items-center justify-center bg-black/40 font-bold text-emerald-300 text-xs">
+                                        SCAN QR
+                                    </div>
+                                </div>
+                                <span class="text-[10px] font-bold text-slate-600 mt-1 block" id="qrLabel">eSewa ID: 9841234567</span>
+                            </div>
+
+                            <div class="space-y-2 text-xs flex-1">
+                                <p class="font-bold text-slate-800" id="paymentTitle">Pay via eSewa / Khalti / Fonepay:</p>
+                                <ol class="list-decimal list-inside text-slate-600 space-y-1 text-[11px]">
+                                    <li>Scan the QR code using your eSewa / Khalti mobile app.</li>
+                                    <li>Transfer exact amount: <span id="checkoutAmountText" class="font-bold text-jpRed">NPR 0</span></li>
+                                    <li>Upload payment screenshot/receipt image below for instant verification by Tokyo hub.</li>
+                                </ol>
+                                <div class="mt-2">
+                                    <label class="block text-[11px] font-bold text-slate-700 mb-1">Upload Receipt Screenshot:</label>
+                                    <input type="file" accept="image/*" id="paymentScreenshot" class="w-full text-[11px] text-slate-500 file:mr-2 file:py-1 file:px-3 file:rounded-xl file:border-0 file:text-[11px] file:font-semibold file:bg-jpRed file:text-white hover:file:bg-rose-700">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Confirm Button -->
+                    <div class="pt-4 border-t border-slate-100 flex items-center justify-between">
+                        <div>
+                            <span class="text-xs text-slate-500 block">Total Amount</span>
+                            <span id="finalCheckoutTotal" class="text-xl font-black text-jpRed">NPR 0</span>
+                        </div>
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 py-3 rounded-xl transition shadow-lg flex items-center gap-2">
+                            <i class="fa-solid fa-paper-plane"></i> Confirm Order to Japan
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== ADD PRODUCT MODAL (ADMIN) ==================== -->
+    <div id="addProductModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div onclick="closeAddProductModal()" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm"></div>
+        <div class="relative min-h-screen flex items-center justify-center p-4">
+            <div class="relative w-full max-w-md bg-white rounded-3xl shadow-2xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="font-bold text-slate-900">Add Japanese Product to Inventory</h3>
+                    <button onclick="closeAddProductModal()" class="text-slate-400 hover:text-slate-600"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <form onsubmit="saveNewProduct(event)" class="space-y-3 text-xs">
+                    <div>
+                        <label class="block font-semibold mb-1">Product Title</label>
+                        <input type="text" id="newProdName" required placeholder="e.g. Biore UV Aqua Rich Sunscreen" class="w-full p-2.5 bg-slate-50 border rounded-xl">
+                    </div>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="block font-semibold mb-1">Category</label>
+                            <select id="newProdCat" class="w-full p-2.5 bg-slate-50 border rounded-xl">
+                                <option value="Skincare">Skincare</option>
+                                <option value="Snacks">Snacks/Matcha</option>
+                                <option value="Electronics">Electronics</option>
+                                <option value="Anime">Anime Merch</option>
+                                <option value="Watches">Watches</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block font-semibold mb-1">Price (NPR)</label>
+                            <input type="number" id="newProdPrice" required placeholder="2500" class="w-full p-2.5 bg-slate-50 border rounded-xl">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Product Image URL</label>
+                        <input type="url" id="newProdImg" required placeholder="https://images.unsplash.com/..." class="w-full p-2.5 bg-slate-50 border rounded-xl">
+                    </div>
+                    <div>
+                        <label class="block font-semibold mb-1">Short Description (Origin, Specs)</label>
+                        <textarea id="newProdDesc" rows="2" required placeholder="Imported directly from Ginza, Tokyo..." class="w-full p-2.5 bg-slate-50 border rounded-xl"></textarea>
+                    </div>
+                    <button type="submit" class="w-full bg-jpRed text-white font-bold py-2.5 rounded-xl hover:bg-rose-700 transition">Save Product to Shop</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- TOAST NOTIFICATION SYSTEM -->
+    <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2"></div>
+
+    <!-- APPLICATION SCRIPT LOGIC -->
+    <script>
+        // 1. DATA MODELS & INITIAL STATE
+        const JPY_TO_NPR = 0.89; // 1 JPY = 0.89 NPR
+
+        let products = [
+            {
+                id: 'jp_1',
+                name: 'Hada Labo Gokujyun Hyaluronic Acid Lotion (170ml)',
+                category: 'Skincare',
+                priceNpr: 1850,
+                rating: 4.9,
+                reviews: 142,
+                origin: 'Made in Japan (Tokyo)',
+                image: 'https://images.unsplash.com/photo-1556228720-195a672e8a03?auto=format&fit=crop&w=600&q=80',
+                desc: 'Japan\'s #1 moisturizing lotion with 4 types of hyaluronic acid for deep hydration.'
+            },
+            {
+                id: 'jp_2',
+                name: 'Organic Uji Matcha Powder Ceremonial Grade (100g)',
+                category: 'Snacks',
+                priceNpr: 3200,
+                rating: 4.8,
+                reviews: 98,
+                origin: 'Kyoto, Japan',
+                image: 'https://images.unsplash.com/photo-1536256263959-770b48d82b0a?auto=format&fit=crop&w=600&q=80',
+                desc: 'Authentic stone-ground Uji matcha from Kyoto. Rich in antioxidants and vibrant green.'
+            },
+            {
+                id: 'jp_3',
+                name: 'Casio G-Shock GA-2100 "CasiOak" Special Edition',
+                category: 'Watches',
+                priceNpr: 17500,
+                rating: 5.0,
+                reviews: 64,
+                origin: 'Casio Yamagata Japan',
+                image: 'https://images.unsplash.com/photo-1524805444758-089113d48a6d?auto=format&fit=crop&w=600&q=80',
+                desc: 'Ultra-durable carbon core guard structure watch imported directly from Japan.'
+            },
+            {
+                id: 'jp_4',
+                name: 'Sony WH-1000XM5 Noise Canceling Headphones',
+                category: 'Electronics',
+                priceNpr: 48000,
+                rating: 4.9,
+                reviews: 210,
+                origin: 'Sony Corp Tokyo',
+                image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?auto=format&fit=crop&w=600&q=80',
+                desc: 'Industry-leading noise cancellation with 30-hour battery life and crisp high-res audio.'
+            },
+            {
+                id: 'jp_5',
+                name: 'Demon Slayer Katana Replica & Tanjiro Figure (25cm)',
+                category: 'Anime',
+                priceNpr: 6500,
+                rating: 4.7,
+                reviews: 85,
+                origin: 'Akihabara, Tokyo',
+                image: 'https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?auto=format&fit=crop&w=600&q=80',
+                desc: 'Official Bandai licensed collectible action figure with original Japanese box.'
+            },
+            {
+                id: 'jp_6',
+                name: 'Biore UV Aqua Rich Watery Essence SPF50+ PA++++',
+                category: 'Skincare',
+                priceNpr: 1450,
+                rating: 5.0,
+                reviews: 320,
+                origin: 'Kao Japan',
+                image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=600&q=80',
+                desc: 'Lightweight water-like sunscreen that absorbs instantly without white cast.'
+            },
+            {
+                id: 'jp_7',
+                name: 'Japanese KitKat Limited Edition Variety Pack (12 Flavors)',
+                category: 'Snacks',
+                priceNpr: 2100,
+                rating: 4.8,
+                reviews: 175,
+                origin: 'Nestle Japan Tokyo',
+                image: 'https://images.unsplash.com/photo-1582293041079-7814c2f12063?auto=format&fit=crop&w=600&q=80',
+                desc: 'Includes famous Matcha, Sake, Tokyo Banana & Wasabi flavors exclusive to Japan.'
+            },
+            {
+                id: 'jp_8',
+                name: 'Seiko 5 Automatic Sports Watch (Made in Japan Edition)',
+                category: 'Watches',
+                priceNpr: 34000,
+                rating: 4.9,
+                reviews: 44,
+                origin: 'Seiko Watch Corp',
+                image: 'https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=600&q=80',
+                desc: '24-jewel automatic mechanical movement with day-date dial. Legendary reliability.'
+            }
+        ];
+
+        let cart = [];
+        let orders = [
+            {
+                id: 'NJP-90821',
+                date: '2026-03-28',
+                customerName: 'Aarav Sharma',
+                phone: '9851092831',
+                district: 'Kathmandu',
+                address: 'Thamel, Ward 26',
+                items: [
+                    { name: 'Hada Labo Lotion', qty: 2, price: 1850 },
+                    { name: 'Biore UV Sunscreen', qty: 1, price: 1450 }
+                ],
+                totalNpr: 6350,
+                payMethod: 'eSewa QR',
+                payStatus: 'Confirmed',
+                shipMethod: 'EMS Air Express',
+                shipStatus: 'Shipped via EMS' // Options: Processing in Japan -> Shipped via EMS -> In Transit to TIA -> Out for Delivery
+            }
+        ];
+
+        let currentCategory = 'all';
+        let currentPayMethod = 'esewa';
+        let currentLang = 'EN'; // 'EN' or 'NP'
+
+        // Translations Dictionary
+        const i18n = {
+            EN: {
+                cart: 'Cart',
+                my_orders: 'Track Order',
+                hero_title: 'Order Genuine Products Direct From Japan to Nepal.',
+                hero_desc: 'No middleman fees! Buy authentic Cosmetics, Electronics, Matcha, Anime collectibles & Watches. Fast shipping via Japan EMS & Cargo. Pay with eSewa, Khalti, or Bank.',
+                shop_now: 'Explore Shop',
+                catalog_title: 'Japanese Product Catalog',
+                add_to_cart: 'Add to Cart'
+            },
+            NP: {
+                cart: 'झोला (Cart)',
+                my_orders: 'अर्डर ट्रयाक',
+                hero_title: 'जापानबाट सोझै नेपाल सामान अर्डर गर्नुहोस्।',
+                hero_desc: 'बिचौलिया बिना सक्कली जापानी कस्मेटिक्स, इलेक्ट्रोनिक्स, म्याचा र घडीहरू घरमै मगाउनुहोस्। ईसेवा, खल्ती वा बैङ्कबाट सजिलै भुक्तानी गर्नुहोस्।',
+                shop_now: 'सामान हेर्नुहोस्',
+                catalog_title: 'जापानी सामानहरूको सूची',
+                add_to_cart: 'कार्टमा थप्नुहोस्'
+            }
+        };
+
+        // 2. INITIALIZATION ON LOAD
+        window.onload = function() {
+            renderProducts();
+            renderCustomerOrders();
+            renderAdminOrders();
+            updateStats();
+        };
+
+        // 3. UI TAB & NAVIGATION TOGGLES
+        function switchTab(tabName) {
+            document.getElementById('storefrontView').classList.add('hidden');
+            document.getElementById('ordersView').classList.add('hidden');
+            document.getElementById('adminView').classList.add('hidden');
+
+            if (tabName === 'storefront') {
+                document.getElementById('storefrontView').classList.remove('hidden');
+            } else if (tabName === 'orders') {
+                document.getElementById('ordersView').classList.remove('hidden');
+                renderCustomerOrders();
+            } else if (tabName === 'admin') {
+                document.getElementById('adminView').classList.remove('hidden');
+                renderAdminOrders();
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function toggleAdminView() {
+            const adminView = document.getElementById('adminView');
+            if (adminView.classList.contains('hidden')) {
+                switchTab('admin');
+                document.getElementById('adminToggleText').innerText = "Customer View";
+                showToast("Switched to Japan Hub Admin View", "info");
+            } else {
+                switchTab('storefront');
+                document.getElementById('adminToggleText').innerText = "Admin Portal";
+            }
+        }
+
+        function toggleLanguage() {
+            currentLang = currentLang === 'EN' ? 'NP' : 'EN';
+            document.getElementById('currentLangText').innerText = currentLang === 'EN' ? 'नेपाली' : 'English';
+            
+            // Apply translations
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (i18n[currentLang][key]) {
+                    el.innerText = i18n[currentLang][key];
+                }
+            });
+            showToast(`Language switched to ${currentLang === 'EN' ? 'English' : 'Nepali'}`, 'info');
+        }
+
+        // 4. PRODUCT CATALOG RENDERING & FILTERING
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const searchVal = document.getElementById('searchInput').value.toLowerCase() || document.getElementById('searchInputMobile').value.toLowerCase();
+            
+            const filtered = products.filter(p => {
+                const matchCategory = currentCategory === 'all' || p.category === currentCategory;
+                const matchSearch = p.name.toLowerCase().includes(searchVal) || p.desc.toLowerCase().includes(searchVal);
+                return matchCategory && matchSearch;
+            });
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full text-center py-12 bg-white rounded-3xl border border-slate-200">
+                        <i class="fa-solid fa-box-open text-4xl text-slate-300 mb-3"></i>
+                        <p class="font-bold text-slate-700">No products found</p>
+                        <p class="text-xs text-slate-400">Try searching for something else like "Matcha" or "Biore"</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(p => {
+                const yenEquivalent = Math.round(p.priceNpr / JPY_TO_NPR);
+                return `
+                    <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-xl transition-all duration-300 flex flex-col justify-between overflow-hidden group">
+                        <div>
+                            <!-- Image Container -->
+                            <div class="relative h-48 overflow-hidden bg-slate-100">
+                                <img src="${p.image}" alt="${p.name}" class="w-full h-full object-cover group-hover:scale-105 transition duration-500">
+                                <span class="absolute top-3 left-3 bg-slate-900/80 backdrop-blur text-white text-[10px] font-bold px-2.5 py-1 rounded-full">
+                                    🇯🇵 ${p.origin}
+                                </span>
+                                <span class="absolute top-3 right-3 bg-jpRed text-white text-[10px] font-bold px-2 py-0.5 rounded">
+                                    Direct Import
+                                </span>
+                            </div>
+
+                            <!-- Product Info -->
+                            <div class="p-5">
+                                <div class="flex items-center justify-between text-xs text-slate-400 mb-1">
+                                    <span>${p.category}</span>
+                                    <span class="text-amber-500 font-bold"><i class="fa-solid fa-star"></i> ${p.rating} (${p.reviews})</span>
+                                </div>
+                                <h3 class="font-bold text-slate-900 text-sm leading-snug line-clamp-2 group-hover:text-jpRed transition">
+                                    ${p.name}
+                                </h3>
+                                <p class="text-slate-500 text-xs mt-2 line-clamp-2 leading-relaxed">
+                                    ${p.desc}
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- Price & Add Action -->
+                        <div class="p-5 pt-0">
+                            <div class="pt-3 border-t border-slate-100 flex items-center justify-between">
+                                <div>
+                                    <span class="text-xs text-slate-400 block font-mono">¥${yenEquivalent.toLocaleString()} JPY</span>
+                                    <span class="text-lg font-black text-slate-900">NPR ${p.priceNpr.toLocaleString()}</span>
+                                </div>
+                                <button onclick="addToCart('${p.id}')" class="bg-slate-900 hover:bg-jpRed text-white px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 shadow">
+                                    <i class="fa-solid fa-plus"></i> <span data-i18n="add_to_cart">Add</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function setCategory(cat) {
+            currentCategory = cat;
+            document.querySelectorAll('.cat-btn').forEach(btn => {
+                btn.className = "cat-btn bg-white text-slate-600 hover:bg-slate-100 px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap border border-slate-200 transition";
+            });
+            const activeBtn = document.getElementById(`cat-${cat}`);
+            if (activeBtn) {
+                activeBtn.className = "cat-btn bg-slate-900 text-white px-4 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition shadow";
+            }
+            renderProducts();
+        }
+
+        function filterProducts() {
+            renderProducts();
+        }
+        function filterProductsMobile() {
+            renderProducts();
+        }
+
+        // 5. CART & CHECKOUT LOGIC
+        function addToCart(productId) {
+            const product = products.find(p => p.id === productId);
+            if (!product) return;
+
+            const existingItem = cart.find(item => item.id === productId);
+            if (existingItem) {
+                existingItem.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+
+            updateCartBadge();
+            showToast(`Added ${product.name.substring(0, 20)}... to cart!`, 'success');
+        }
+
+        function updateCartBadge() {
+            const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+            document.getElementById('cartBadge').innerText = totalItems;
+        }
+
+        function openCart() {
+            renderCartItems();
+            calculateTotals();
+            document.getElementById('cartModal').classList.remove('hidden');
+        }
+
+        function closeCart() {
+            document.getElementById('cartModal').classList.add('hidden');
+        }
+
+        function renderCartItems() {
+            const container = document.getElementById('cartItemsContainer');
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12">
+                        <i class="fa-solid fa-cart-flatbed text-4xl text-slate-300 mb-3"></i>
+                        <p class="font-bold text-slate-700">Your shopping cart is empty</p>
+                        <p class="text-xs text-slate-400">Add products from Japan to begin checkout.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = cart.map(item => `
+                <div class="flex items-center gap-3 p-3 bg-slate-50 rounded-2xl border border-slate-200/60">
+                    <img src="${item.image}" class="w-16 h-16 object-cover rounded-xl shrink-0">
+                    <div class="flex-1 min-w-0">
+                        <h4 class="font-bold text-xs text-slate-900 truncate">${item.name}</h4>
+                        <p class="text-[11px] text-slate-500 mt-0.5">NPR ${item.priceNpr.toLocaleString()}</p>
+                        <div class="flex items-center gap-2 mt-2">
+                            <button onclick="changeQty('${item.id}', -1)" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-xs font-bold flex items-center justify-center hover:bg-slate-100">-</button>
+                            <span class="text-xs font-bold w-4 text-center">${item.qty}</span>
+                            <button onclick="changeQty('${item.id}', 1)" class="w-6 h-6 rounded-lg bg-white border border-slate-200 text-xs font-bold flex items-center justify-center hover:bg-slate-100">+</button>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="font-bold text-xs text-slate-900 block">NPR ${(item.priceNpr * item.qty).toLocaleString()}</span>
+                        <button onclick="removeItem('${item.id}')" class="text-slate-400 hover:text-jpRed text-xs mt-2">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function changeQty(id, delta) {
+            const item = cart.find(i => i.id === id);
+            if (!item) return;
+            item.qty += delta;
+            if (item.qty <= 0) {
+                cart = cart.filter(i => i.id !== id);
+            }
+            renderCartItems();
+            calculateTotals();
+            updateCartBadge();
+        }
+
+        function removeItem(id) {
+            cart = cart.filter(i => i.id !== id);
+            renderCartItems();
+            calculateTotals();
+            updateCartBadge();
+        }
+
+        function calculateTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.priceNpr * item.qty), 0);
+            
+            const shippingMethod = document.querySelector('input[name="shippingMethod"]:checked')?.value || 'EMS';
+            const shippingFee = cart.length > 0 ? (shippingMethod === 'EMS' ? 1200 : 600) : 0;
+            
+            const totalNpr = subtotal + shippingFee;
+            const yenTotal = Math.round(totalNpr / JPY_TO_NPR);
+
+            document.getElementById('cartSubtotal').innerText = `NPR ${subtotal.toLocaleString()}`;
+            document.getElementById('cartShippingFee').innerText = `NPR ${shippingFee.toLocaleString()}`;
+            document.getElementById('cartYenTotal').innerText = `¥${yenTotal.toLocaleString()} JPY`;
+            document.getElementById('cartGrandTotal').innerText = `NPR ${totalNpr.toLocaleString()}`;
+
+            // Sync with checkout form
+            document.getElementById('checkoutAmountText').innerText = `NPR ${totalNpr.toLocaleString()}`;
+            document.getElementById('finalCheckoutTotal').innerText = `NPR ${totalNpr.toLocaleString()}`;
+
+            document.getElementById('btnProceedCheckout').disabled = cart.length === 0;
+        }
+
+        function openCheckout() {
+            if (cart.length === 0) return;
+            closeCart();
+            document.getElementById('checkoutModal').classList.remove('hidden');
+        }
+
+        function closeCheckout() {
+            document.getElementById('checkoutModal').classList.add('hidden');
+        }
+
+        function selectPayMethod(method) {
+            currentPayMethod = method;
+            document.querySelectorAll('.pay-method-btn').forEach(btn => {
+                btn.className = "pay-method-btn border border-slate-200 bg-white p-3 rounded-xl text-center cursor-pointer transition";
+            });
+
+            const activeBtn = document.getElementById(`payTab-${method}`);
+            if (method === 'esewa') {
+                activeBtn.className = "pay-method-btn border-2 border-emerald-500 bg-emerald-50 p-3 rounded-xl text-center cursor-pointer transition";
+                document.getElementById('paymentTitle').innerText = "Pay via eSewa / Khalti QR:";
+                document.getElementById('qrLabel').innerText = "eSewa ID: 9841234567";
+            } else if (method === 'bank') {
+                activeBtn.className = "pay-method-btn border-2 border-blue-500 bg-blue-50 p-3 rounded-xl text-center cursor-pointer transition";
+                document.getElementById('paymentTitle').innerText = "Pay via Direct Bank Transfer (Nepal):";
+                document.getElementById('qrLabel').innerText = "Nabil Bank: 019283746501";
+            } else if (method === 'card') {
+                activeBtn.className = "pay-method-btn border-2 border-slate-900 bg-slate-100 p-3 rounded-xl text-center cursor-pointer transition";
+                document.getElementById('paymentTitle').innerText = "Pay via Credit / Debit Card:";
+                document.getElementById('qrLabel').innerText = "Stripe Secured (Visa/Master)";
+            }
+        }
+
+        function submitOrder(e) {
+            e.preventDefault();
+            
+            const subtotal = cart.reduce((sum, item) => sum + (item.priceNpr * item.qty), 0);
+            const shippingMethod = document.querySelector('input[name="shippingMethod"]:checked')?.value || 'EMS';
+            const shippingFee = shippingMethod === 'EMS' ? 1200 : 600;
+            const totalNpr = subtotal + shippingFee;
+
+            const newOrder = {
+                id: 'NJP-' + Math.floor(10000 + Math.random() * 90000),
+                date: new Date().toISOString().split('T')[0],
+                customerName: document.getElementById('custName').value,
+                phone: document.getElementById('custPhone').value,
+                district: document.getElementById('custDistrict').value,
+                address: document.getElementById('custAddress').value,
+                items: cart.map(i => ({ name: i.name, qty: i.qty, price: i.priceNpr })),
+                totalNpr: totalNpr,
+                payMethod: currentPayMethod === 'esewa' ? 'eSewa QR' : (currentPayMethod === 'bank' ? 'Bank Transfer' : 'Credit Card'),
+                payStatus: 'Verification Pending',
+                shipMethod: shippingMethod === 'EMS' ? 'EMS Air Express' : 'Sea Cargo',
+                shipStatus: 'Processing in Japan'
+            };
+
+            orders.unshift(newOrder);
+            
+            // Reset cart
+            cart = [];
+            updateCartBadge();
+            closeCheckout();
+            
+            // Redirect to customer tracking tab
+            switchTab('orders');
+            showToast(`Order #${newOrder.id} successfully transmitted to Tokyo Hub!`, 'success');
+            updateStats();
+        }
+
+        // 6. CUSTOMER & ADMIN VIEWS RENDERING
+        function renderCustomerOrders() {
+            const container = document.getElementById('customerOrdersList');
+            if (orders.length === 0) {
+                container.innerHTML = `<p class="py-6 text-center text-slate-400 text-xs">No active packages currently being shipped to your address.</p>`;
+                return;
+            }
+
+            container.innerHTML = orders.map(ord => {
+                let statusBadgeClass = "bg-amber-100 text-amber-800";
+                if (ord.shipStatus.includes('Shipped')) statusBadgeClass = "bg-blue-100 text-blue-800";
+                if (ord.shipStatus.includes('Delivery')) statusBadgeClass = "bg-emerald-100 text-emerald-800";
+
+                return `
+                    <div class="py-5 first:pt-0 last:pb-0 space-y-3">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+                            <div>
+                                <span class="font-extrabold text-slate-900 text-sm">Order #${ord.id}</span>
+                                <span class="text-slate-400 text-xs ml-2">Placed on ${ord.date}</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold ${statusBadgeClass}">
+                                    🚚 ${ord.shipStatus}
+                                </span>
+                            </div>
+                        </div>
+
+                        <!-- Progress Bar Pipeline -->
+                        <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden flex">
+                            <div class="h-full bg-jpRed ${ord.shipStatus === 'Processing in Japan' ? 'w-1/4' : (ord.shipStatus === 'Shipped via EMS' ? 'w-2/4' : 'w-full')}"></div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 bg-slate-50 p-4 rounded-2xl text-xs">
+                            <div>
+                                <p class="font-bold text-slate-700">Delivery Destination:</p>
+                                <p class="text-slate-600">${ord.customerName} (${ord.phone})</p>
+                                <p class="text-slate-500">${ord.address}, ${ord.district}, Nepal</p>
+                            </div>
+                            <div>
+                                <p class="font-bold text-slate-700">Order Summary:</p>
+                                <p class="text-slate-600">${ord.items.map(i => `${i.name} (x${i.qty})`).join(', ')}</p>
+                                <p class="font-bold text-jpRed mt-1">Total Paid: NPR ${ord.totalNpr.toLocaleString()} (${ord.payMethod})</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderAdminOrders() {
+            const tbody = document.getElementById('adminOrdersTableBody');
+            if (orders.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-slate-400">No orders received yet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = orders.map(ord => `
+                <tr class="hover:bg-slate-50 transition">
+                    <td class="p-4">
+                        <span class="font-bold text-slate-900 block">${ord.id}</span>
+                        <span class="text-slate-400 text-[11px]">${ord.date}</span>
+                    </td>
+                    <td class="p-4">
+                        <span class="font-semibold block">${ord.customerName}</span>
+                        <span class="text-slate-500 text-[11px]">${ord.phone}</span>
+                        <span class="text-slate-400 block text-[10px]">${ord.district}, Nepal</span>
+                    </td>
+                    <td class="p-4">
+                        <span class="font-bold text-slate-900 block">NPR ${ord.totalNpr.toLocaleString()}</span>
+                        <span class="text-slate-500 text-[11px]">${ord.items.length} item(s)</span>
+                    </td>
+                    <td class="p-4">
+                        <span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded font-bold text-[10px] block w-fit mb-1">${ord.payMethod}</span>
+                        <select onchange="updatePayStatus('${ord.id}', this.value)" class="bg-white border rounded px-1.5 py-1 text-[11px]">
+                            <option value="Verification Pending" ${ord.payStatus === 'Verification Pending' ? 'selected' : ''}>Verification Pending</option>
+                            <option value="Confirmed" ${ord.payStatus === 'Confirmed' ? 'selected' : ''}>Payment Confirmed ✅</option>
+                            <option value="Rejected" ${ord.payStatus === 'Rejected' ? 'selected' : ''}>Payment Rejected ❌</option>
+                        </select>
+                    </td>
+                    <td class="p-4">
+                        <select onchange="updateShipStatus('${ord.id}', this.value)" class="bg-white border rounded px-2 py-1 font-bold text-[11px] text-jpRed">
+                            <option value="Processing in Japan" ${ord.shipStatus === 'Processing in Japan' ? 'selected' : ''}>1. Processing in Japan</option>
+                            <option value="Shipped via EMS" ${ord.shipStatus === 'Shipped via EMS' ? 'selected' : ''}>2. Shipped via EMS Air</option>
+                            <option value="In Transit to TIA" ${ord.shipStatus === 'In Transit to TIA' ? 'selected' : ''}>3. In Transit to TIA Airport</option>
+                            <option value="Out for Delivery in Nepal" ${ord.shipStatus === 'Out for Delivery in Nepal' ? 'selected' : ''}>4. Out for Delivery (Kathmandu)</option>
+                        </select>
+                    </td>
+                    <td class="p-4 text-right">
+                        <button onclick="deleteOrder('${ord.id}')" class="text-rose-500 hover:text-rose-700 p-1">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+
+            updateStats();
+        }
+
+        function updatePayStatus(orderId, status) {
+            const ord = orders.find(o => o.id === orderId);
+            if (ord) {
+                ord.payStatus = status;
+                showToast(`Payment status for #${orderId} updated to ${status}`, 'info');
+                updateStats();
+            }
+        }
+
+        function updateShipStatus(orderId, status) {
+            const ord = orders.find(o => o.id === orderId);
+            if (ord) {
+                ord.shipStatus = status;
+                showToast(`Shipment for #${orderId} updated to: ${status}`, 'success');
+                updateStats();
+            }
+        }
+
+        function deleteOrder(orderId) {
+            orders = orders.filter(o => o.id !== orderId);
+            renderAdminOrders();
+            showToast(`Order #${orderId} removed`, 'info');
+        }
+
+        function updateStats() {
+            document.getElementById('statTotalOrders').innerText = orders.length;
+            document.getElementById('statPendingPayments').innerText = orders.filter(o => o.payStatus === 'Verification Pending').length;
+            document.getElementById('statInTransit').innerText = orders.filter(o => o.shipStatus.includes('Shipped') || o.shipStatus.includes('Transit')).length;
+            
+            const revenue = orders.reduce((sum, o) => sum + o.totalNpr, 0);
+            document.getElementById('statRevenue').innerText = `NPR ${revenue.toLocaleString()}`;
+        }
+
+        // 7. ADMIN NEW PRODUCT MANAGEMENT
+        function openAddProductModal() {
+            document.getElementById('addProductModal').classList.remove('hidden');
+        }
+        function closeAddProductModal() {
+            document.getElementById('addProductModal').classList.add('hidden');
+        }
+        function saveNewProduct(e) {
+            e.preventDefault();
+            const newProd = {
+                id: 'jp_' + (products.length + 1),
+                name: document.getElementById('newProdName').value,
+                category: document.getElementById('newProdCat').value,
+                priceNpr: parseFloat(document.getElementById('newProdPrice').value),
+                rating: 5.0,
+                reviews: 1,
+                origin: 'Tokyo Hub Japan',
+                image: document.getElementById('newProdImg').value,
+                desc: document.getElementById('newProdDesc').value
+            };
+
+            products.unshift(newProd);
+            renderProducts();
+            closeAddProductModal();
+            showToast("New product published to Japan storefront!", "success");
+        }
+
+        // 8. TOAST NOTIFICATION UTILITY
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toastContainer');
+            const toast = document.createElement('div');
+            
+            let bgClass = "bg-slate-900 text-white";
+            if (type === 'success') bgClass = "bg-emerald-600 text-white";
+            if (type === 'error') bgClass = "bg-rose-600 text-white";
+
+            toast.className = `${bgClass} px-4 py-3 rounded-2xl shadow-xl text-xs font-semibold flex items-center gap-2 transition transform translate-y-2 opacity-0`;
+            toast.innerHTML = `
+                <i class="fa-solid ${type === 'success' ? 'fa-circle-check' : 'fa-circle-info'}"></i>
+                <span>${message}</span>
+            `;
+
+            container.appendChild(toast);
+
+            setTimeout(() => {
+                toast.classList.remove('translate-y-2', 'opacity-0');
+            }, 10);
+
+            setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+    </script>
+</body>
+</html>
+```
